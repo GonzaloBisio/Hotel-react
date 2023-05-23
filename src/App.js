@@ -1,11 +1,33 @@
-import LoginForm from "./components/loginform";
+import Navbar from './navbar/navbar';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import ReservationPage from './reservation_page';
+import ConfirmReservation from './confirm_reservation';
+import LoginPage from './login';
+import MyReservations from './reservations';
+import Register from './register';
 
 function App() {
   return (
-    <div className="page">
-      <LoginForm />
-    </div>
+    <Router>
+      <Navbar />
+      <Switch>
+        <Route exact path="/">
+        <ReservationPage />
+        </Route>
+        <Route path="/confirm-reservation">
+          <ConfirmReservation/>
+        </Route>
+        <Route path="/login">
+          <LoginPage/>
+        </Route>
+        <Route path="/reservations">
+          <MyReservations/>
+        </Route>
+        <Route path="/register">
+          <Register/>
+        </Route>
+      </Switch>
+    </Router>
   );
 }
-
 export default App;
