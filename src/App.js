@@ -5,6 +5,7 @@ import ConfirmReservation from './confirm_reservation';
 import LoginPage from './login';
 import MyReservations from './reservations';
 import Register from './register';
+import Hotels from './hotels.js';
 
 function App() {
   return (
@@ -25,6 +26,9 @@ function App() {
         </Route>
         <Route path="/register">
           <Register/>
+        </Route>
+        <Route path="/hoteles">
+          <Hotels/>
         </Route>
       </Switch>
     </Router>
