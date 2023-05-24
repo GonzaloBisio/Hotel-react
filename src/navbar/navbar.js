@@ -17,7 +17,7 @@ const Navbar = () => {
       <nav>
         <div className="nav-wrapper grey darken-3">
           <a href="/" className="brand-logo" style={{ marginLeft: 1 + 'em' }}>
-            Sheraton
+            Hoteles Online
           </a>
           <ul id="nav-mobile" className="right hide-on-med-and-down">
             <li>

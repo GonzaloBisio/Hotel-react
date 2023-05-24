@@ -52,6 +52,7 @@ function ReservationPage() {
                 params: requestData
             })
             .then(response => {
+                console.log(response);
                 setAvailableRooms(response.data.rooms_available);
             })
             .catch(error => {

@@ -15,7 +15,7 @@ function ConfirmReservation() {
             setToken(storedToken);
         } else {
             // Redireccionar a la página de inicio de sesión si no hay token almacenado
-            history.push('/login');
+            history.push('/login', { requestData });
         }
     }, [history]);
 
