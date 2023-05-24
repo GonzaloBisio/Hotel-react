@@ -14,7 +14,7 @@ function ReservationPage() {
         // Realizar la solicitud GET a http://localhost:8000/hotel
         axios.get('http://localhost:8000/hotel')
             .then(response => {
-                setHotels(response.data);
+                setHotels(response.data['hotels']);
                 // Inicializar nuevamente el componente select
                 M.AutoInit();
                 var elems = document.querySelectorAll('.datepicker');
@@ -52,6 +52,7 @@ function ReservationPage() {
                 params: requestData
             })
             .then(response => {
+                console.log(response);
                 setAvailableRooms(response.data.rooms_available);
             })
             .catch(error => {
