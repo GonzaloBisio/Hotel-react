@@ -1,3 +1,4 @@
+import Navbar from './navbar/navbar';
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import axios from 'axios';
@@ -32,6 +33,8 @@ const Register = () => {
   };
 
   return (
+    <>
+    <Navbar/>
     <div className="container">
       <h2>Registro</h2>
       <form onSubmit={handleSubmit}>
@@ -93,6 +96,7 @@ const Register = () => {
         <button className="btn waves-effect waves-light" type="submit">Registrar</button>
       </form>
     </div>
+    </>
   );
 };
 

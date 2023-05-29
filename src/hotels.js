@@ -1,3 +1,4 @@
+import Navbar from './navbar/navbar';
 import axios from 'axios';
 import { useState, useEffect } from 'react';
 import M from 'materialize-css';
@@ -33,6 +34,8 @@ function HotelPage() {
   }, []);
 
   return (
+    <>
+    <Navbar/>
     <div className="container">
       <h1>Hoteles</h1>
       {hotels.map(hotel => (
@@ -59,6 +62,7 @@ function HotelPage() {
         </div>
       ))}
     </div>
+    </>
   );
 }
 

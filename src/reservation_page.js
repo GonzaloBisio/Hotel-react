@@ -1,3 +1,4 @@
+import Navbar from './navbar/navbar';
 import axios from 'axios';
 import { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
@@ -88,6 +89,7 @@ function ReservationPage() {
 
     return (
         <>
+        <Navbar />
             <div className="row">
                 <div className="col s12">
                     <div className="card-panel">

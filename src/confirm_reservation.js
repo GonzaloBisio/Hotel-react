@@ -1,3 +1,4 @@
+import Navbar from './navbar/navbar';
 import axios from 'axios';
 import { useState, useEffect } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
@@ -8,16 +9,17 @@ function ConfirmReservation() {
     const requestData = location.state && location.state.requestData;
     const [token, setToken] = useState('');
 
-    useEffect((requestData) => {
+    useEffect(() => {
         // Verificar si hay un token almacenado en el almacenamiento local (localStorage)
         const storedToken = localStorage.getItem('token');
         if (storedToken) {
             setToken(storedToken);
         } else {
+            console.log(requestData)
             // Redireccionar a la página de inicio de sesión si no hay token almacenado
             history.push('/login', { requestData });
         }
-    }, [history]);
+    }, [history, requestData]);
 
     const adjustedData = {
         hotel_id: parseInt(requestData.hotel_id),
@@ -47,6 +49,7 @@ function ConfirmReservation() {
 
     return (
         <>
+        <Navbar/>
             <div className="row">
                 <div className="col s12">
                     <div className="card-panel">

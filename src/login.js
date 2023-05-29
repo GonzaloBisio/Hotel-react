@@ -1,3 +1,4 @@
+import Navbar from './navbar/navbar';
 import axios from 'axios';
 import { useState, useEffect } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
@@ -17,7 +18,7 @@ function LoginPage() {
       // Redirigir a la página principal
       history.push('/');
     }
-  }, [history]);
+  }, [history, requestData]);
 
   const handleLogin = (event) => {
     event.preventDefault();
@@ -35,6 +36,7 @@ function LoginPage() {
         // Almacenar el token en el almacenamiento local (localStorage)
         localStorage.setItem('token', token);
         // Redirigir a la página de confirmación de reserva si hay datos de solicitud, de lo contrario, a la página principal
+        console.log(requestData)
         if (requestData) {
           history.push('/confirm-reservation', { requestData });
         } else {
@@ -55,6 +57,7 @@ function LoginPage() {
 
   return (
     <>
+    <Navbar/>
       <div className="row">
         <div className="col s0 m3"></div>
         <div className="col s12 m6">
