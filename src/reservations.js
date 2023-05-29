@@ -1,11 +1,21 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
+import { useHistory } from 'react-router-dom';
 
 function MyReservations() {
+  const history = useHistory();
   const [reservations, setReservations] = useState([]);
-  const token = localStorage.getItem('token');
+  const [token, setToken] = useState('');
 
   useEffect(() => {
+    // Verificar si hay un token almacenado en el almacenamiento local (localStorage)
+    const storedToken = localStorage.getItem('token');
+    if (storedToken) {
+        setToken(storedToken);
+    } else {
+        // Redireccionar a la página de inicio de sesión si no hay token almacenado
+        history.push('/login');
+    }
     // Realizar la solicitud GET a http://localhost:8000/my-reservations
     axios.get('http://localhost:8000/my-reservations', {
       headers: {
@@ -14,13 +24,13 @@ function MyReservations() {
     })
       .then(response => {
         // Manejar la respuesta de la solicitud
-        setReservations(response.data);
+        setReservations(response.data['reservations']);
       })
       .catch(error => {
         // Manejar los errores de la solicitud
         console.error('Error al obtener las reservas:', error);
       });
-  }, [token]);
+  }, [token, history]);
 
   // Ordenar las reservas en orden descendente por reservation_id
   reservations.sort((a, b) => b.reservation_id - a.reservation_id);
@@ -41,7 +51,7 @@ function MyReservations() {
           {reservations.map(reservation => (
             <tr key={reservation.reservation_id}>
               <td>{reservation.reservation_id}</td>
-              <td>{reservation.name}</td>
+              <td>{reservation.hotel_name}</td>
               <td>{reservation.initial_date}</td>
               <td>{reservation.final_date}</td>
             </tr>

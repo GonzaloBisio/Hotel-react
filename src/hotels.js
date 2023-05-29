@@ -21,17 +21,35 @@ function HotelPage() {
       });
   }, []);
 
+  useEffect(() => {
+    // Cambiar de imagen automáticamente cada 5 segundos
+    const intervalId = setInterval(() => {
+      M.Carousel.getInstance(document.querySelector('.carousel')).next();
+    }, 5000);
+    
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, []);
+
   return (
     <div className="container">
       <h1>Hoteles</h1>
       {hotels.map(hotel => (
         <div className="card" key={hotel.id}>
           <div className="card-image">
-            <img src={hotel.images[0]} alt="Hotel" />
-            <span className="card-title">{hotel.name}</span>
+            <div className="carousel carousel-slider">
+              {hotel.images.map(image => (
+                <a className="carousel-item" href="#!" key={image}>
+                  <img src={image} alt="Hotel" />
+                </a>
+              ))}
+            </div>
+            <span className="card-title" style={{ color: 'white', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.8)', fontWeight: 'bold', fontSize: '3em' }}>{hotel.name}</span>
           </div>
           <div className="card-content">
             <p>{hotel.description}</p>
+            <h5>Comodidades</h5>
             <ul>
               {hotel.amenities.map(amenity => (
                 <li key={amenity}>{amenity}</li>

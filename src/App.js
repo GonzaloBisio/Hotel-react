@@ -1,3 +1,4 @@
+import React, { useEffect } from 'react';
 import Navbar from './navbar/navbar';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import ReservationPage from './reservation_page';
@@ -8,6 +9,9 @@ import Register from './register';
 import Hotels from './hotels.js';
 
 function App() {
+  useEffect(() => {
+    document.title = 'Hoteles Online';
+  }, []);
   return (
     <Router>
       <Navbar />

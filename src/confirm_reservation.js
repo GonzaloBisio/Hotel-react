@@ -8,7 +8,7 @@ function ConfirmReservation() {
     const requestData = location.state && location.state.requestData;
     const [token, setToken] = useState('');
 
-    useEffect(() => {
+    useEffect((requestData) => {
         // Verificar si hay un token almacenado en el almacenamiento local (localStorage)
         const storedToken = localStorage.getItem('token');
         if (storedToken) {

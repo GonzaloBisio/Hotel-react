@@ -56,7 +56,8 @@ function LoginPage() {
   return (
     <>
       <div className="row">
-        <div className="col s12">
+        <div className="col s0 m3"></div>
+        <div className="col s12 m6">
           <div className="card-panel">
             <h4>Iniciar Sesión</h4>
             {error && <p>{error}</p>}
@@ -81,15 +82,16 @@ function LoginPage() {
               </div>
               <div className="row">
                 <div className="col s6">
-                  <button className="waves-effect waves-light btn" type="submit">Iniciar Sesión</button>
+                  <button className="waves-effect waves-light btn grey darken-3" type="submit">Iniciar Sesión</button>
                 </div>
                 <div className="col s6">
-                  <button className="waves-effect waves-light btn" onClick={handleRegister}>Registrarse</button>
+                  <button className="waves-effect waves-light btn grey darken-3" onClick={handleRegister}>Registrarse</button>
                 </div>
               </div>
             </form>
           </div>
         </div>
+        <div className="col s0 m3"></div>
       </div>
     </>
   );

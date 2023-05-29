@@ -14,7 +14,11 @@ function ReservationPage() {
         // Realizar la solicitud GET a http://localhost:8000/hotel
         axios.get('http://localhost:8000/hotel')
             .then(response => {
-                setHotels(response.data['hotels']);
+                const updatedHotels = response.data.hotels.map(hotel => ({
+                    ...hotel,
+                    images: hotel.images.map(image => `http://localhost:8000/${image}`)
+                  }));
+                setHotels(updatedHotels);
                 // Inicializar nuevamente el componente select
                 M.AutoInit();
                 var elems = document.querySelectorAll('.datepicker');
@@ -28,37 +32,55 @@ function ReservationPage() {
             });
     }, []);
 
+    const parseDate = (dateString) => {
+        const parts = dateString.split('/');
+        const day = parts[0];
+        const month = parts[1];
+        const year = parts[2];
+        return `${year}-${month}-${day}`;
+      };
+
     const handleSubmit = (event) => {
         event.preventDefault();
         const form = event.target;
         const formData = new FormData(form);
-
+      
         const hotel_id = formData.get('hotel_id');
         const initialDate = formData.get('initial_date');
         const finalDate = formData.get('final_date');
-
+      
+        // Verificar si initialDate es anterior a finalDate
+        const initialDateObj = new Date(parseDate(initialDate));
+        const finalDateObj = new Date(parseDate(finalDate));
+        if (initialDateObj >= finalDateObj) {
+          // Mostrar un mensaje de error o realizar alguna acción adicional
+          alert('La fecha inicial debe ser anterior a la fecha final');
+          return;
+        }
+      
         const requestData = {
-            hotel_id: hotel_id,
-            initial_date: initialDate,
-            final_date: finalDate,
+          hotel_id: hotel_id,
+          initial_date: initialDate,
+          final_date: finalDate,
         };
-
+      
         // Establece los datos del formulario en el estado
         setRequestData(requestData);
-
+      
         // Realizar la solicitud a la API
         axios
-            .get('http://localhost:8000/rooms-available', {
-                params: requestData
-            })
-            .then(response => {
-                console.log(response);
-                setAvailableRooms(response.data.rooms_available);
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-    };
+          .get('http://localhost:8000/rooms-available', {
+            params: requestData
+          })
+          .then(response => {
+            console.log(response);
+            setAvailableRooms(response.data.rooms_available);
+          })
+          .catch(error => {
+            console.error('Error:', error);
+          });
+      };
+      
 
     const handleReservationClick = () => {
         history.push('/confirm-reservation', { requestData });
@@ -76,7 +98,7 @@ function ReservationPage() {
                                     <select className="icons" name="hotel_id" required defaultValue="0">
                                         <option name="hotel_id" value="0" disabled >Elije Hotel a Reservar</option>
                                         {hotels.map(hotel => (
-                                            <option name="hotel_id" key={hotel.id} value={hotel.id} data-icon="images/sample-1.jpg">
+                                            <option name="hotel_id" key={hotel.id} value={hotel.id} data-icon={hotel.images[0]}>
                                                 {hotel.name}
                                             </option>
                                         ))}
@@ -115,7 +137,7 @@ function ReservationPage() {
                                     <div>Habitacion
                                         {/* Utiliza el componente Link para redirigir a /reservation */}
                                         <button onClick={handleReservationClick} className="secondary-content">
-                                            <i className="material-icons">send</i>
+                                            <i className="material-icons grey-text">send</i>
                                         </button>
                                     </div>
                                 </li>
