@@ -12,8 +12,8 @@ function ReservationPage() {
     const history = useHistory();
 
     useEffect(() => {
-        // Realizar la solicitud GET a http://localhost:8000/hotel
-        axios.get('http://localhost:8000/hotel')
+        // Realizar la solicitud GET a http://localhost:5000/hotel
+        axios.get('http://localhost:5000/hotel')
             .then(response => {
                 const updatedHotels = response.data.hotels.map(hotel => ({
                     ...hotel,
@@ -70,7 +70,7 @@ function ReservationPage() {
       
         // Realizar la solicitud a la API
         axios
-          .get('http://localhost:8000/rooms-available', {
+          .get('http://localhost:5000/rooms-available', {
             params: requestData
           })
           .then(response => {

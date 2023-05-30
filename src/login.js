@@ -28,8 +28,8 @@ function LoginPage() {
       password: password
     };
 
-    // Realizar la solicitud POST a http://localhost:8000/login
-    axios.post('http://localhost:8000/login', loginData)
+    // Realizar la solicitud POST a http://localhost:5000/login
+    axios.post('http://localhost:5000/login', loginData)
       .then(response => {
         // Manejar la respuesta de la solicitud
         const token = response.data.token;

@@ -8,7 +8,7 @@ function HotelPage() {
 
   useEffect(() => {
     axios
-      .get('http://localhost:8000/hotel')
+      .get('http://localhost:5000/hotel')
       .then(response => {
         const updatedHotels = response.data.hotels.map(hotel => ({
           ...hotel,

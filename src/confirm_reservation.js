@@ -28,8 +28,8 @@ function ConfirmReservation() {
       };
 
     const handleConfirmReservation = () => {
-        // Realizar la solicitud POST a http://localhost:8000/reservation
-        axios.post('http://localhost:8000/reservation', adjustedData, {
+        // Realizar la solicitud POST a http://localhost:5000/reservation
+        axios.post('http://localhost:5000/reservation', adjustedData, {
             headers: {
                 Authorization: `Bearer ${token}`
             }

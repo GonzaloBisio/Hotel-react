@@ -19,9 +19,9 @@ function MyReservations() {
       return; // Detener la ejecución del useEffect si no hay token almacenado
     }
   
-    // Realizar la solicitud GET a http://localhost:8000/my-reservations
+    // Realizar la solicitud GET a http://localhost:5000/my-reservations
     axios
-      .get('http://localhost:8000/my-reservations', {
+      .get('http://localhost:5000/my-reservations', {
         headers: {
           Authorization: `Bearer ${storedToken}` // Utilizar storedToken en lugar de token
         }

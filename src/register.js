@@ -20,7 +20,7 @@ const Register = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    axios.post('http://localhost:8000/user', formData)
+    axios.post('http://localhost:5000/user', formData)
       .then(response => {
         // Manejar la respuesta de la solicitud
         console.log('Registro exitoso:', response.data);
