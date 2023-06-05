@@ -58,6 +58,23 @@ function ReservationPage() {
           alert('La fecha inicial debe ser anterior a la fecha final');
           return;
         }
+
+        // Obtener la fecha actual
+        const currentDate = new Date();
+
+        // Verificar si initialDate es posterior a la fecha actual
+        if (initialDateObj.getDate < currentDate.getDate) {
+        // Mostrar un mensaje de error o realizar alguna acción adicional
+        alert('La fecha inicial no puede ser anterior a la fecha actual');
+        return;
+        }
+
+        // Verificar si finalDate es posterior a la fecha actual
+        if (finalDateObj.getDate < currentDate.getDate) {
+        // Mostrar un mensaje de error o realizar alguna acción adicional
+        alert('La fecha final no puede ser anterior a la fecha actual');
+        return;
+}
       
         const requestData = {
           hotel_id: hotel_id,

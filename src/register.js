@@ -29,6 +29,11 @@ const Register = () => {
       .catch(error => {
         // Manejar los errores de la solicitud
         console.error('Error al registrar:', error);
+        if (error.response && error.response.data && error.response.data.error) {
+          alert(error.response.data.error);
+        } else {
+          alert('Error desconocido');
+        }
       });
   };
 
