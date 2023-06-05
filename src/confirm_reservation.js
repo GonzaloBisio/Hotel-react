@@ -8,6 +8,7 @@ function ConfirmReservation() {
     const location = useLocation();
     const requestData = location.state && location.state.requestData;
     const [token, setToken] = useState('');
+    const [hotelName, setHotelName] = useState('');
 
     useEffect(() => {
         // Verificar si hay un token almacenado en el almacenamiento local (localStorage)
@@ -19,13 +20,23 @@ function ConfirmReservation() {
             // Redireccionar a la página de inicio de sesión si no hay token almacenado
             history.push('/login', { requestData });
         }
+        const getHotelName = async () => {
+            try {
+              const response = await axios.get(`http://localhost:5000/hotel/${requestData.hotel_id}`);
+              const { name } = response.data;
+              setHotelName(name);
+            } catch (error) {
+              console.error('Error al obtener el nombre del hotel:', error);
+            }
+          };
+        getHotelName();
     }, [history, requestData]);
 
     const adjustedData = {
         hotel_id: parseInt(requestData.hotel_id),
         initial_date: requestData.initial_date,
         final_date: requestData.final_date
-      };
+    };
 
     const handleConfirmReservation = () => {
         // Realizar la solicitud POST a http://localhost:5000/reservation
@@ -34,29 +45,29 @@ function ConfirmReservation() {
                 Authorization: `Bearer ${token}`
             }
         })
-        .then(response => {
-            // Manejar la respuesta de la solicitud
-            console.log('Reserva confirmada:', response.data);
-            // Redireccionar a /reservations
-            history.push('/reservations');
+            .then(response => {
+                // Manejar la respuesta de la solicitud
+                console.log('Reserva confirmada:', response.data);
+                // Redireccionar a /reservations
+                history.push('/reservations');
 
-        })
-        .catch(error => {
-            // Manejar los errores de la solicitud
-            console.error('Error al confirmar la reserva:', error);
-        });
+            })
+            .catch(error => {
+                // Manejar los errores de la solicitud
+                console.error('Error al confirmar la reserva:', error);
+            });
     };
 
     return (
         <>
-        <Navbar/>
+            <Navbar />
             <div className="row">
                 <div className="col s12">
                     <div className="card-panel">
                         <h4>Confirmar Reserva</h4>
                         <p>Fecha Inicio: <b>{requestData.initial_date}</b></p>
                         <p>Fecha Final: <b>{requestData.final_date}</b></p>
-                        <p>Hotel: <b>{requestData.hotel_id}</b></p>
+                        <p>Hotel: <b>{hotelName}</b></p>
                         <button className="waves-effect waves-light btn-large grey darken-3" onClick={handleConfirmReservation}>
                             Confirmar Reserva
                         </button>
