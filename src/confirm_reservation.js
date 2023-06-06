@@ -39,6 +39,7 @@ function ConfirmReservation() {
     };
 
     const handleConfirmReservation = () => {
+        console.log(adjustedData);
         // Realizar la solicitud POST a http://localhost:5000/reservation
         axios.post('http://localhost:5000/reservation', adjustedData, {
             headers: {
