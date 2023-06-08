@@ -35,6 +35,23 @@ function LoginPage() {
         const token = response.data.token;
         // Almacenar el token en el almacenamiento local (localStorage)
         localStorage.setItem('token', token);
+
+        // Verificar si el usuario es administrador
+        axios.get('http://localhost:5000/myuser', {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+            .then(response => {
+                if (response.data["admin"] === 1) {
+                    // Redireccionar al inicio si el usuario no es administrador
+                    history.push('/admin');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+
         // Redirigir a la página de confirmación de reserva si hay datos de solicitud, de lo contrario, a la página principal
         console.log(requestData)
         if (requestData) {
@@ -63,7 +80,7 @@ function LoginPage() {
         <div className="col s12 m6">
           <div className="card-panel">
             <h4>Iniciar Sesión</h4>
-            {error && <p>{error}</p>}
+            {error && <p className='red-text'>{error}</p>}
             <form onSubmit={handleLogin}>
               <div className="input-field">
                 <input
