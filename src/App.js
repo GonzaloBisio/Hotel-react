@@ -14,6 +14,8 @@ import CreateUser from './admin/admin_usuarios_crear';
 import AmenitiesPage from './admin/admin_amenities';
 import CreateAmenity from './admin/admin_amenities_crear';
 import ImagePage from './admin/admin_imagenes';
+import CreateImage from './admin/admin_imagenes_crear';
+import AdminReservations from './admin/admin_reservas';
 
 
 function App() {
@@ -62,8 +64,14 @@ function App() {
         <Route path="/admin/amenities">
           <AmenitiesPage/>
         </Route>
+        <Route path="/admin/imagenes/crear">
+          <CreateImage/>
+        </Route>
         <Route path="/admin/imagenes">
           <ImagePage/>
+        </Route>
+        <Route path="/admin/reservas">
+          <AdminReservations/>
         </Route>
         <Route path="/admin/">
           <AdminPage/>

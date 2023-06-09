@@ -37,21 +37,18 @@ const Navbar = () => {
     <>
       <nav>
         <div className="nav-wrapper grey darken-3">
-          <a href="/" className="brand-logo" style={{ marginLeft: 1 + 'em' }}>
-            Hoteles Online
+          <a href={isAdmin ? "/admin" : "/"} className="brand-logo" style={{ marginLeft: 1 + 'em' }}>
+            {isAdmin ? "Admin" : "Hoteles Online"}
           </a>
           <ul id="nav-mobile" className="right hide-on-med-and-down">
             <li>
               <a href="/hoteles">Hoteles</a>
             </li>
-            <li>
-              <a href="/reservations">Mis Reservas</a>
-            </li>
-            {isLoggedIn && isAdmin ? (
+            {!isAdmin && (
               <li>
-                <a href="/admin">Admin</a>
+                <a href="/reservations">Mis Reservas</a>
               </li>
-            ) : null}
+            )}
             {isLoggedIn ? (
               <li>
                 <a href="/login" onClick={handleLogout}>

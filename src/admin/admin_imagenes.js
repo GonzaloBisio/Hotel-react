@@ -1,15 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import Navbar from '../navbar/navbar';
+import { useHistory } from 'react-router-dom';
 
 const ImagePage = () => {
+  const history = useHistory();
   const [images, setImages] = useState([]);
 
   useEffect(() => {
     axios
-      .get('http://localhost:5000/images')
+      .get('http://localhost:5000/image')
       .then(response => {
-        setImages(response.data);
+        setImages(response.data.images);
       })
       .catch(error => {
         console.error('Error:', error);
@@ -26,6 +28,10 @@ const ImagePage = () => {
     }
   };
 
+  const handleCreateImagen = () => {
+    history.push('/admin/imagenes/crear');
+  };
+
   return (
     <>
       <Navbar />
@@ -33,33 +39,46 @@ const ImagePage = () => {
         <div className="col s12">
           <div className="card">
             <div className="card-content">
-              <span className="card-title">Imágenes de Hoteles</span>
-              <table className="highlight">
-                <thead>
-                  <tr>
-                    <th>ID</th>
-                    <th>Imagen</th>
-                    <th>Hotel</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {images.map(image => (
-                    <tr key={image.id}>
-                      <td>{image.id}</td>
-                      <td>
-                        <img
-                          src={`http://localhost:8000/${image.path}`}
-                          alt={`Imagen ${image.id}`}
-                          style={{ width: '200px', height: 'auto' }}
-                        />
-                      </td>
-                      <td>
-                        <HotelInfo hotelId={image.hotelId} getHotelData={getHotelData} />
-                      </td>
+            <div className="col s10">
+              <h4>Imagenes</h4>
+            </div>
+            <div className="col s2">
+              <button
+                className="btn waves-effect waves-light grey darken-3 right"
+                onClick={handleCreateImagen}>
+                Crear
+              </button>
+            </div>
+              {images.length > 0 ? (
+                <table className="highlight">
+                  <thead>
+                    <tr>
+                      <th>ID</th>
+                      <th>Imagen</th>
+                      <th>Hotel</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {images.map(image => (
+                      <tr key={image.id}>
+                        <td>{image.id}</td>
+                        <td>
+                          <img
+                            src={`http://localhost:8000/${image.path}`}
+                            alt={`Imagen ${image.id}`}
+                            style={{ width: '200px', height: 'auto' }}
+                          />
+                        </td>
+                        <td>
+                          <HotelInfo hotelId={image.hotel_id} getHotelData={getHotelData} />
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              ) : (
+                <p>No hay imágenes disponibles.</p>
+              )}
             </div>
           </div>
         </div>

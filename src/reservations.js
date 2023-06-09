@@ -1,15 +1,18 @@
+// MyReservations.jsx
+
 import Navbar from './navbar/navbar';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import M from 'materialize-css';
 
 function MyReservations() {
   const history = useHistory();
+  const location = useLocation();
   const [reservations, setReservations] = useState([]);
   const [token, setToken] = useState('');
   const [hotels, setHotels] = useState([]);
-
+  const [reservationConfirmed, setReservationConfirmed] = useState(false);
 
   useEffect(() => {
     // Verificar si hay un token almacenado en el almacenamiento local (localStorage)
@@ -21,8 +24,14 @@ function MyReservations() {
       history.push('/login');
     }
 
+    if (location.state && location.state.newReservation && !reservationConfirmed) {
+      M.toast({ html: '¡Reserva confirmada exitosamente!', classes: 'green' });
+      setReservationConfirmed(true);
+    }
+
     // Realizar la solicitud GET a http://localhost:5000/hotel
-    axios.get('http://localhost:5000/hotel')
+    axios
+      .get('http://localhost:5000/hotel')
       .then(response => {
         const updatedHotels = response.data.hotels.map(hotel => ({
           ...hotel,
@@ -31,9 +40,9 @@ function MyReservations() {
         setHotels(updatedHotels);
         // Inicializar nuevamente el componente select
         M.AutoInit();
-        var elems = document.querySelectorAll('.datepicker');
-        var options = {
-          format: 'dd/mm/yyyy',
+        const elems = document.querySelectorAll('.datepicker');
+        const options = {
+          format: 'dd/mm/yyyy'
         };
         M.Datepicker.init(elems, options);
       })
@@ -56,25 +65,20 @@ function MyReservations() {
     axios
       .get('http://localhost:5000/my-reservations', {
         headers: {
-          Authorization: `Bearer ${storedToken}` // Utilizar storedToken en lugar de token
+          Authorization: `Bearer ${token}`
         },
-        params: params // Pasar los query params al objeto params de la solicitud
+        params: params
       })
       .then(response => {
-        // Manejar la respuesta de la solicitud
         setReservations(response.data['reservations']);
       })
       .catch(error => {
-        // Manejar los errores de la solicitud
         console.error('Error al obtener las reservas:', error);
       });
-
-  }, [token, history]);
-
+  }, [history, location, token, setReservationConfirmed, reservationConfirmed]);
 
   // Ordenar las reservas en orden descendente por reservation_id
   reservations.sort((a, b) => b.reservation_id - a.reservation_id);
-
 
   return (
     <>
@@ -83,11 +87,13 @@ function MyReservations() {
       <div className="row">
         <div className="col s12">
           <div className="card-panel">
-            <form >
+            <form>
               <div className="row">
                 <div className="input-field col s12 m6">
                   <select className="icons" name="hotel_id" required defaultValue="0">
-                    <option name="hotel_id" value="" disabled >Elije Hotel a Reservar</option>
+                    <option name="hotel_id" value="" disabled>
+                      Elije Hotel a Reservar
+                    </option>
                     {hotels.map(hotel => (
                       <option name="hotel_id" key={hotel.id} value={hotel.id} data-icon={hotel.images[0]}>
                         {hotel.name}
@@ -97,7 +103,7 @@ function MyReservations() {
                   <label>Hotel</label>
                 </div>
                 <div className="col s12 m4">
-                  <div className='grey-text'>Fecha a Buscar</div>
+                  <div className="grey-text">Fecha a Buscar</div>
                   <input name="date" type="text" className="datepicker" />
                 </div>
 
@@ -135,8 +141,6 @@ function MyReservations() {
           </div>
         </div>
       </div>
-
-
     </>
   );
 }
