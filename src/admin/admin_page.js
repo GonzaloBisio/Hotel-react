@@ -117,6 +117,21 @@ function AdminPage() {
             </div>
           </div>
         </div>
+        <div className="col s12 m6">
+          <div className="card">
+            <div className="card-content">
+              <span className="card-title">Vincular Hotel con Amenitie</span>
+              <Link to="/admin/hotel_amenitie" className="btn waves-effect waves-light grey darken-3">
+                Ver Relaciones
+              </Link>
+            </div>
+            <div className="card-action">
+              <Link to="/admin/hotel_amenitie/crear" className="btn waves-effect waves-light grey darken-3">
+                Crear Relacion
+              </Link>
+            </div>
+          </div>
+        </div>
       </div>
     </>
   );
