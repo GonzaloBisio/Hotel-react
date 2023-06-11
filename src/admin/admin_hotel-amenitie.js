@@ -59,7 +59,7 @@ function HotelAmenitiesPage() {
               </thead>
               <tbody>
                 {hotelAmenities.map(item => (
-                  <tr>
+                  <tr key={`${item.hotel_id}${item.amenitie_id}`}>
                     <td>{item.hotel_id}</td>
                     <td>{item.hotel_name}</td>
                     <td>{item.amenitie_id}</td>

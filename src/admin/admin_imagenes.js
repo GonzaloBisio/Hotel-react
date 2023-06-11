@@ -2,12 +2,42 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import Navbar from '../navbar/navbar';
 import { useHistory } from 'react-router-dom';
+import M from 'materialize-css';
 
 const ImagePage = () => {
   const history = useHistory();
   const [images, setImages] = useState([]);
+  const [token, setToken] = useState('');
 
   useEffect(() => {
+    // Verificar si hay un token almacenado en el almacenamiento local (localStorage)
+    const storedToken = localStorage.getItem('token');
+    if (storedToken) {
+      setToken(storedToken);
+    } else {
+      // Redireccionar a la página de inicio de sesión si no hay token almacenado
+      history.push('/login');
+    }
+
+    // Verificar si el usuario es administrador
+    axios.get('http://localhost:5000/myuser', {
+      headers: {
+        Authorization: `Bearer ${storedToken}`
+      }
+    })
+      .then(response => {
+        if (response.data["admin"] === 0) {
+          alert(response.data["admin"])
+          // Redireccionar al inicio si el usuario no es administrador
+          history.push('/');
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        history.push('/');
+      });
+
+
     axios
       .get('http://localhost:5000/image')
       .then(response => {
@@ -16,7 +46,7 @@ const ImagePage = () => {
       .catch(error => {
         console.error('Error:', error);
       });
-  }, []);
+  }, [history]);
 
   const getHotelData = async (hotelId) => {
     try {
@@ -30,6 +60,28 @@ const ImagePage = () => {
 
   const handleCreateImagen = () => {
     history.push('/admin/imagenes/crear');
+  };
+
+  const handleDeleteImage = (imageId) => {
+    if (window.confirm(`¿Seguro que quieres borrar la imagen ${imageId}?`)) {
+      axios.delete(`http://localhost:5000/image/${imageId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
+        .then(response => {
+          // Eliminación exitosa, actualiza la lista de hoteles
+          const updatedList = images.filter(image => image.id !== imageId);
+          setImages(updatedList);
+          // Muestra un mensaje de éxito
+          M.toast({ html: 'Imagen eliminada exitosamente', classes: 'green' });
+        })
+        .catch(error => {
+          console.error('Error al eliminar la imagen:', error);
+          // Muestra un mensaje de error
+          M.toast({ html: 'Error al eliminar la imagen', classes: 'red' });
+        });
+    }
   };
 
   return (
@@ -56,6 +108,7 @@ const ImagePage = () => {
                       <th>ID</th>
                       <th>Imagen</th>
                       <th>Hotel</th>
+                      <th>Acciones</th> 
                     </tr>
                   </thead>
                   <tbody>
@@ -72,6 +125,14 @@ const ImagePage = () => {
                         <td>
                           <HotelInfo hotelId={image.hotel_id} getHotelData={getHotelData} />
                         </td>
+                        <td>
+                      <button
+                        className="btn-floating waves-effect waves-light red"
+                        onClick={() => handleDeleteImage(image.id)}
+                      >
+                        <i className="material-icons">delete</i>
+                      </button>
+                    </td>
                       </tr>
                     ))}
                   </tbody>
