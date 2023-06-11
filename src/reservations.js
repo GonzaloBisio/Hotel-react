@@ -1,18 +1,55 @@
-// MyReservations.jsx
-
+import React, { useEffect, useState, useCallback } from 'react';
 import Navbar from './navbar/navbar';
-import axios from 'axios';
-import { useEffect, useState } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
-import M from 'materialize-css';
+import axios from 'axios';
+import M from 'materialize-css'
 
-function MyReservations() {
+const AdminReservations = () => {
   const history = useHistory();
   const location = useLocation();
   const [reservations, setReservations] = useState([]);
-  const [token, setToken] = useState('');
   const [hotels, setHotels] = useState([]);
-  const [reservationConfirmed, setReservationConfirmed] = useState(false);
+  const [selectedHotel, setSelectedHotel] = useState('');
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
+  const [token, setToken] = useState('');
+  const [reservationConfirmed, setReservationConfirmed] = useState('');
+  
+
+  const fetchReservations = useCallback(() => {
+    const params = {};
+
+    if (selectedHotel) {
+      params.hotel_id = selectedHotel;
+    }
+    if (startDate) {
+      params.start_date = startDate;
+    }
+    if (endDate) {
+      params.end_date = endDate;
+    }
+
+    if (!token) {
+      return
+    }
+
+    axios.get('http://localhost:5000/my-reservations', {
+      headers: {
+        Authorization: `Bearer ${token}`
+      },
+      params: params
+    })
+      .then(response => {
+        const data = response.data;
+        const reservations = data.reservations || [];
+        setReservations(reservations);
+      })
+      .catch(error => {
+        alert(error)
+        alert(token)
+        console.error('Error:', error);
+      });
+  }, [selectedHotel, startDate, endDate, token]);
 
   useEffect(() => {
     // Verificar si hay un token almacenado en el almacenamiento local (localStorage)
@@ -29,56 +66,22 @@ function MyReservations() {
       setReservationConfirmed(true);
     }
 
-    // Realizar la solicitud GET a http://localhost:5000/hotel
-    axios
-      .get('http://localhost:5000/hotel')
+    axios.get('http://localhost:5000/hotel')
       .then(response => {
-        const updatedHotels = response.data.hotels.map(hotel => ({
-          ...hotel,
-          images: hotel.images.map(image => `http://localhost:8000/${image}`)
-        }));
-        setHotels(updatedHotels);
-        // Inicializar nuevamente el componente select
-        M.AutoInit();
-        const elems = document.querySelectorAll('.datepicker');
-        const options = {
-          format: 'dd/mm/yyyy'
-        };
-        M.Datepicker.init(elems, options);
+        setHotels(response.data.hotels);
+        M.AutoInit()
       })
       .catch(error => {
         console.error('Error:', error);
       });
 
-    const urlSearchParams = new URLSearchParams(window.location.search);
-    const params = {};
+    fetchReservations();
+  }, [fetchReservations, history, token, reservationConfirmed, location]);
 
-    // Verificar si existen los query params y agregarlos al objeto params
-    if (urlSearchParams.has('hotel_id')) {
-      params.hotel_id = urlSearchParams.get('hotel_id');
-    }
-    if (urlSearchParams.has('date')) {
-      params.date = urlSearchParams.get('date');
-    }
-
-    // Realizar la solicitud GET a http://localhost:5000/my-reservations
-    axios
-      .get('http://localhost:5000/my-reservations', {
-        headers: {
-          Authorization: `Bearer ${token}`
-        },
-        params: params
-      })
-      .then(response => {
-        setReservations(response.data['reservations']);
-      })
-      .catch(error => {
-        console.error('Error al obtener las reservas:', error);
-      });
-  }, [history, location, token, setReservationConfirmed, reservationConfirmed]);
-
-  // Ordenar las reservas en orden descendente por reservation_id
-  reservations.sort((a, b) => b.reservation_id - a.reservation_id);
+  const handleFormSubmit = e => {
+    e.preventDefault();
+    fetchReservations();
+  };
 
   return (
     <>
@@ -87,62 +90,72 @@ function MyReservations() {
       <div className="row">
         <div className="col s12">
           <div className="card-panel">
-            <form>
+            <form onSubmit={handleFormSubmit}>
               <div className="row">
-                <div className="input-field col s12 m6">
-                  <select className="icons" name="hotel_id" required defaultValue="0">
-                    <option name="hotel_id" value="" disabled>
-                      Elije Hotel a Reservar
-                    </option>
+                <div className="input-field col s12 m6 l4">
+                  <div className='grey-text'>Hotel</div>
+                  <select
+                    className="icons"
+                    name="hotel_id"
+                    required
+                    value={selectedHotel}
+                    onChange={e => setSelectedHotel(e.target.value)}
+                  >
+                    <option value="">Ningun Hotel</option>
                     {hotels.map(hotel => (
-                      <option name="hotel_id" key={hotel.id} value={hotel.id} data-icon={hotel.images[0]}>
+                      <option key={hotel.id} value={hotel.id}>
                         {hotel.name}
                       </option>
                     ))}
                   </select>
-                  <label>Hotel</label>
                 </div>
-                <div className="col s12 m4">
-                  <div className="grey-text">Fecha a Buscar</div>
-                  <input name="date" type="text" className="datepicker" />
+                <div className="input-field col s12 m6 l4">
+                  <div className='grey-text'>Fecha Inicio</div>
+                  <input
+                    type="date"
+                    name="start_date"
+                    value={startDate}
+                    onChange={e => setStartDate(e.target.value)}
+                  />
                 </div>
-
-                <div className="col s12 m2">
-                  <button className="btn-large waves-effect waves-light grey darken-3" type="submit">
-                    Filtrar
-                    <i className="material-icons right">send</i>
-                  </button>
+                <div className="input-field col s12 m6 l4">
+                  <div className='grey-text'>Fecha Final</div>
+                  <input
+                    type="date"
+                    name="end_date"
+                    value={endDate}
+                    onChange={e => setEndDate(e.target.value)}
+                  />
                 </div>
               </div>
             </form>
-            <div className="container">
-              <h2>Mis Reservas</h2>
-              <table>
-                <thead>
-                  <tr>
-                    <th>Reservation ID</th>
-                    <th>Nombre</th>
-                    <th>Fecha Inicio</th>
-                    <th>Fecha Final</th>
+
+            <h2>Mis Reservas</h2>
+            <table>
+              <thead>
+                <tr>
+                  <th>Reservation ID</th>
+                  <th>Hotel</th>
+                  <th>Fecha Inicio</th>
+                  <th>Fecha Final</th>
+                </tr>
+              </thead>
+              <tbody>
+                {reservations.map(reservation => (
+                  <tr key={reservation.reservation_id}>
+                    <td>{reservation.reservation_id}</td>
+                    <td>{reservation.name}</td>
+                    <td>{reservation.initial_date}</td>
+                    <td>{reservation.final_date}</td>
                   </tr>
-                </thead>
-                <tbody>
-                  {reservations.map(reservation => (
-                    <tr key={reservation.reservation_id}>
-                      <td>{reservation.reservation_id}</td>
-                      <td>{reservation.hotel_name}</td>
-                      <td>{reservation.initial_date}</td>
-                      <td>{reservation.final_date}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                ))}
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
     </>
   );
-}
+};
 
-export default MyReservations;
+export default AdminReservations;

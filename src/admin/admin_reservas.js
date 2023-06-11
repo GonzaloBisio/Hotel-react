@@ -2,7 +2,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 import Navbar from '../navbar/navbar';
 import { useHistory } from 'react-router-dom';
 import axios from 'axios';
-import M from 'materialize-css';
+import M from 'materialize-css'
 
 const AdminReservations = () => {
   const history = useHistory();
@@ -31,6 +31,10 @@ const AdminReservations = () => {
       params.end_date = endDate;
     }
 
+    if(!token){
+      return
+    }
+
     axios.get('http://localhost:5000/reservation', {
       headers: {
         Authorization: `Bearer ${token}`
@@ -38,9 +42,13 @@ const AdminReservations = () => {
       params: params
     })
       .then(response => {
-        setReservations(response.data.reservations);
+        const data = response.data;
+        const reservations = data.reservations || [];
+        setReservations(reservations);
       })
       .catch(error => {
+        alert(error)
+        alert(token)
         console.error('Error:', error);
       });
   }, [selectedHotel, selectedUser, startDate, endDate, token]);
@@ -75,13 +83,7 @@ const AdminReservations = () => {
     axios.get('http://localhost:5000/hotel')
       .then(response => {
         setHotels(response.data.hotels);
-        M.AutoInit();
-        //Formato Fecha
-        var elems = document.querySelectorAll('.datepicker');
-        var options = {
-          format: 'dd/mm/yyyy',
-        };
-        M.Datepicker.init(elems, options);
+        M.AutoInit()
       })
       .catch(error => {
         console.error('Error:', error);
@@ -94,13 +96,7 @@ const AdminReservations = () => {
     })
       .then(response => {
         setUsers(response.data.users);
-        M.AutoInit();
-        //Formato Fecha
-        var elems = document.querySelectorAll('.datepicker');
-        var options = {
-          format: 'dd/mm/yyyy',
-        };
-        M.Datepicker.init(elems, options);
+        M.AutoInit()
       })
       .catch(error => {
         console.error('Error:', error);
@@ -132,9 +128,9 @@ const AdminReservations = () => {
                     value={selectedHotel}
                     onChange={e => setSelectedHotel(e.target.value)}
                   >
-                    <option value="" disabled>Elije Hotel</option>
+                    <option value="">Ningun Hotel</option>
                     {hotels.map(hotel => (
-                      <option key={hotel.id} value={hotel.id} data-icon={hotel.images[0]}>
+                      <option key={hotel.id} value={hotel.id}>
                         {hotel.name}
                       </option>
                     ))}
@@ -149,7 +145,7 @@ const AdminReservations = () => {
                     value={selectedUser}
                     onChange={e => setSelectedUser(e.target.value)}
                   >
-                    <option value="" disabled>Elije Usuario</option>
+                    <option value="">Ningun Usuario</option>
                     {users.map(user => (
                       <option key={user.id} value={user.id}>
                         {user.email}
@@ -160,8 +156,7 @@ const AdminReservations = () => {
                 <div className="input-field col s12 m6 l3">
                   <div className='grey-text'>Fecha Inicio</div>
                   <input
-                    type="text"
-                    className="datepicker"
+                    type="date"
                     name="start_date"
                     value={startDate}
                     onChange={e => setStartDate(e.target.value)}
@@ -170,8 +165,7 @@ const AdminReservations = () => {
                 <div className="input-field col s12 m6 l3">
                   <div className='grey-text'>Fecha Final</div>
                   <input
-                    type="text"
-                    className="datepicker"
+                    type="date"
                     name="end_date"
                     value={endDate}
                     onChange={e => setEndDate(e.target.value)}
@@ -212,7 +206,6 @@ const AdminReservations = () => {
           </div>
         </div>
       </div>
-
     </>
   );
 };

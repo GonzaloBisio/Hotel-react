@@ -46,7 +46,7 @@ const ImagePage = () => {
               <button
                 className="btn waves-effect waves-light grey darken-3 right"
                 onClick={handleCreateImagen}>
-                Crear
+                Subir
               </button>
             </div>
               {images.length > 0 ? (

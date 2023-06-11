@@ -98,7 +98,7 @@ const Register = () => {
           />
           <label htmlFor="password">Contraseña</label>
         </div>
-        <button className="btn waves-effect waves-light" type="submit">Registrar</button>
+        <button className="btn waves-effect waves-light grey darken-3" type="submit">Registrar</button>
       </form>
     </div>
     </>

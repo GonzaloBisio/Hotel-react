@@ -64,7 +64,7 @@ const CreateImagePage = () => {
       <div className="row">
         <div className="col s12">
           <div className="card-panel">
-            <h4>Crear Imagen</h4>
+            <h4>Subir Imagen</h4>
 
             {error && <p className="error-message red-text">{error}</p>}
 

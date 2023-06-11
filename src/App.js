@@ -17,6 +17,8 @@ import ImagePage from './admin/admin_imagenes';
 import CreateImage from './admin/admin_imagenes_crear';
 import AdminReservations from './admin/admin_reservas';
 import AdminHotelModificationForm from './admin/admin_hoteles_modificar';
+import HotelAmenitiesPage from './admin/admin_hotel-amenitie';
+import CreateHotelAmenitiePage from './admin/admin_hotel-amenitie_crear';
 
 
 function App() {
@@ -72,10 +74,10 @@ function App() {
           <ImagePage/>
         </Route>
         <Route path="/admin/hotel_amenitie/crear">
-          <CreateAmenity/>
+          <CreateHotelAmenitiePage/>
         </Route>
         <Route path="/admin/hotel_amenitie">
-          <AmenitiesPage/>
+          <HotelAmenitiesPage/>
         </Route>
         <Route path="/admin/reservas">
           <AdminReservations/>

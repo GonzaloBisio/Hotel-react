@@ -66,7 +66,7 @@ function AdminPage() {
               </Link>
             </div>
             <div className="card-action">
-              <Link to="/admin/reservas/crear" className="btn waves-effect waves-light grey darken-3">
+              <Link to="/admin/reservas/crear" disabled className="btn waves-effect waves-light grey darken-3">
                 Crear Reserva
               </Link>
             </div>
@@ -81,7 +81,7 @@ function AdminPage() {
               </Link>
             </div>
             <div className="card-action">
-              <Link to="/admin/usuarios/crear" className="btn waves-effect waves-light grey darken-3">
+              <Link to="/admin/usuarios/crear" disabled className="btn waves-effect waves-light grey darken-3">
                 Crear Usuario
               </Link>
             </div>
@@ -112,7 +112,7 @@ function AdminPage() {
             </div>
             <div className="card-action">
               <Link to="/admin/imagenes/crear" className="btn waves-effect waves-light grey darken-3">
-                Crear Imagen
+                Subir Imagen
               </Link>
             </div>
           </div>

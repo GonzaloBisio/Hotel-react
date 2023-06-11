@@ -1,9 +1,7 @@
-// ConfirmReservation.jsx
-
-import Navbar from './navbar/navbar';
-import axios from 'axios';
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
+import axios from 'axios';
+import Navbar from './navbar/navbar';
 
 function ConfirmReservation() {
   const history = useHistory();
@@ -60,36 +58,38 @@ function ConfirmReservation() {
   return (
     <>
       <Navbar />
-      <div className="row">
-        <div className="col s12 m6 offset-m3">
-          {hotelInfo && (
-            <div className="card">
-              <div className="card-image">
-              <img src={`http://localhost:8000/${hotelInfo.images[0]}`} alt="Hotel" />
-                <span className="card-title">{hotelInfo.name}</span>
+      <div className="container">
+        <div className="row">
+          <div className="col s12 m6 offset-m3">
+            {hotelInfo && (
+              <div className="card">
+                <div className="card-image">
+                  <img src={`http://localhost:8000/${hotelInfo.images[0]}`} alt="Hotel" />
+                  <span className="card-title">{hotelInfo.name}</span>
+                </div>
+                <div className="card-content">
+                  <p>{hotelInfo.description}</p>
+                  <p>
+                    <strong>Comodidades:</strong> {hotelInfo.amenities.join(', ')}
+                  </p>
+                  <p>
+                    <strong>Fecha Inicio:</strong> {requestData.initial_date}
+                  </p>
+                  <p>
+                    <strong>Fecha Final:</strong> {requestData.final_date}
+                  </p>
+                </div>
+                <div className="card-action">
+                  <button
+                    className="btn waves-effect waves-light grey darken-3"
+                    onClick={handleConfirmReservation}
+                  >
+                    Confirmar Reserva
+                  </button>
+                </div>
               </div>
-              <div className="card-content">
-                <p>{hotelInfo.description}</p>
-                <p>
-                  <strong>Comodidades:</strong> {hotelInfo.amenities.join(', ')}
-                </p>
-                <p>
-                  <strong>Fecha Inicio:</strong> {requestData.initial_date}
-                </p>
-                <p>
-                  <strong>Fecha Final:</strong> {requestData.final_date}
-                </p>
-              </div>
-              <div className="card-action">
-                <button
-                  className="waves-effect waves-light btn grey darken-3"
-                  onClick={handleConfirmReservation}
-                >
-                  Confirmar Reserva
-                </button>
-              </div>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </div>
     </>
