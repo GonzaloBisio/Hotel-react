@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { useHistory } from 'react-router-dom';
+import { useHistory, Link } from 'react-router-dom';
 import Navbar from '../navbar/navbar';
 import M from 'materialize-css';
 
@@ -104,7 +104,9 @@ function AmenitiesPage() {
                 {amenities.map(amenity => (
                   <tr key={amenity.id}>
                     <td>{amenity.id}</td>
-                    <td>{amenity.name}</td>
+                    <td>
+                      <Link to={`/admin/amenities/modificar/${amenity.id}`}>{amenity.name}</Link>
+                    </td>
                     <td>
                       <button
                         className="btn-floating waves-effect waves-light red"

@@ -31,7 +31,7 @@ const AdminReservations = () => {
       params.end_date = endDate;
     }
 
-    if(!token){
+    if (!token) {
       return
     }
 
@@ -109,6 +109,26 @@ const AdminReservations = () => {
     e.preventDefault();
     fetchReservations();
   };
+
+  const handleDeleteReservation = (reservationId) => {
+    if (window.confirm('¿Estás seguro de que deseas eliminar esta reserva?')) {
+      axios.delete(`http://localhost:5000/reservation/${reservationId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
+        .then(response => {
+          console.log('Reserva eliminada:', response.data);
+          // Volver a cargar las reservas después de eliminar
+          M.toast({ html: '¡Reserva eliminada exitosamente!', classes: 'green' });
+          fetchReservations();
+        })
+        .catch(error => {
+          console.error('Error al eliminar la reserva:', error);
+        });
+    }
+  };
+  
 
   return (
     <>
@@ -199,6 +219,14 @@ const AdminReservations = () => {
                     <td>{reservation.user_last_name}</td>
                     <td>{reservation.user_dni}</td>
                     <td>{reservation.user_email}</td>
+                    <td>
+                      <button
+                        className="btn waves-effect waves-light red"
+                        onClick={() => handleDeleteReservation(reservation.reservation_id)}
+                      >
+                        Eliminar
+                      </button>
+                    </td>
                   </tr>
                 ))}
               </tbody>

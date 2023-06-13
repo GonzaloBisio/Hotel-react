@@ -1,7 +1,7 @@
 import Navbar from '../navbar/navbar';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useHistory, Link } from 'react-router-dom';
 import M from 'materialize-css';
 
 // ...importaciones y código anterior...
@@ -114,7 +114,9 @@ function AdminHotels() {
                 {hotels.map(hotel => (
                   <tr key={hotel.id}>
                     <td>{hotel.id}</td>
-                    <td>{hotel.name}</td>
+                    <td>
+                      <Link to={`/admin/hoteles/modificar/${hotel.id}`}>{hotel.name}</Link>
+                    </td>
                     <td>{hotel.rooms_available}</td>
                     <td>{hotel.description}</td>
                     <td>

@@ -19,6 +19,8 @@ import AdminReservations from './admin/admin_reservas';
 import AdminHotelModificationForm from './admin/admin_hoteles_modificar';
 import HotelAmenitiesPage from './admin/admin_hotel-amenitie';
 import CreateHotelAmenitiePage from './admin/admin_hotel-amenitie_crear';
+import UpdateAmenity from './admin/admin_amenities_modificar';
+import ModifyUser from './admin/admin_usuarios_modificar copy';
 
 
 function App() {
@@ -49,12 +51,11 @@ function App() {
         <Route path="/admin/hoteles/crear">
           <CreateHotel/>
         </Route>
-        <Route path="/admin/hoteles/modificar">
-          <AdminHotelModificationForm/>
-        </Route>
+        <Route path="/admin/hoteles/modificar/:id" component={AdminHotelModificationForm} />
         <Route path="/admin/hoteles">
           <AdminHotels/>
         </Route>
+        <Route path="/admin/usuarios/modificar/:id" component={ModifyUser} />
         <Route path="/admin/usuarios/crear">
           <CreateUser/>
         </Route>
@@ -64,6 +65,7 @@ function App() {
         <Route path="/admin/amenities/crear">
           <CreateAmenity/>
         </Route>
+        <Route path="/admin/amenities/modificar/:id" component={UpdateAmenity} />
         <Route path="/admin/amenities">
           <AmenitiesPage/>
         </Route>

@@ -7,21 +7,41 @@ import M from 'materialize-css';
 function AdminHotelModificationForm() {
   const history = useHistory();
   const { id } = useParams();
+  const [token, setToken] = useState('');
   const [hotelData, setHotelData] = useState({
     name: '',
     rooms_available: 0,
     description: '',
     amenities: [],
   });
-  const [availableAmenities, setAvailableAmenities] = useState([]);
-  const [selectedAmenities, setSelectedAmenities] = useState([]);
 
   useEffect(() => {
+    // Verificar si hay un token almacenado en el almacenamiento local (localStorage)
     const storedToken = localStorage.getItem('token');
-    if (!storedToken) {
+    if (storedToken) {
+      setToken(storedToken);
+    } else {
+      // Redireccionar a la página de inicio de sesión si no hay token almacenado
       history.push('/login');
-      return;
     }
+
+    // Verificar si el usuario es administrador
+    axios.get('http://localhost:5000/myuser', {
+      headers: {
+        Authorization: `Bearer ${storedToken}`
+      }
+    })
+      .then(response => {
+        if (response.data["admin"] === 0) {
+          alert(response.data["admin"])
+          // Redireccionar al inicio si el usuario no es administrador
+          history.push('/');
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        history.push('/');
+      });
 
     // Obtener datos del hotel para autocompletar el formulario
     axios
@@ -38,28 +58,16 @@ function AdminHotelModificationForm() {
           description: hotel.description,
           amenities: hotel.amenities,
         });
-        setSelectedAmenities(hotel.amenities.map(amenity => amenity.name));
+        document.getElementById("rooms_available").select();
+        document.getElementById("description").select();
+        document.getElementById("name").select();
+        document.getElementById("name").blur();
       })
       .catch(error => {
         console.error('Error:', error);
       });
 
-    // Obtener amenities disponibles para el select
-    axios
-      .get('http://localhost:5000/amenitie', {
-        headers: {
-          Authorization: `Bearer ${storedToken}`,
-        },
-      })
-      .then(response => {
-        const amenities = response.data.amenities;
-        setAvailableAmenities(amenities);
-        M.AutoInit();
-      })
-      .catch(error => {
-        console.error('Error:', error);
-      });
-  }, [history, id]);
+  }, [history, id, token]);
 
   const handleInputChange = event => {
     const { name, value } = event.target;
@@ -67,17 +75,6 @@ function AdminHotelModificationForm() {
       ...prevData,
       [name]: value,
     }));
-  };
-
-  const handleAmenitySelect = event => {
-    const options = event.target.options;
-    const selectedValues = [];
-    for (let i = 0; i < options.length; i++) {
-      if (options[i].selected) {
-        selectedValues.push(options[i].value);
-      }
-    }
-    setSelectedAmenities(selectedValues);
   };
 
   const handleSubmit = event => {
@@ -104,29 +101,7 @@ function AdminHotelModificationForm() {
       })
       .then(response => {
         console.log('Hotel modified:', response.data);
-
-        // Actualizar amenities del hotel
-        const addedAmenities = selectedAmenities.filter(amenity => (
-          !hotelData.amenities.some(existingAmenity => existingAmenity.name === amenity)
-        ));
-        const removePromises = hotelData.amenities.map(existingAmenity => (
-          axios.put(`http://localhost:8000/hotel/${id}/remove-amenitie/${existingAmenity.id}`)
-        ));
-        const addPromises = addedAmenities.map(amenity => {
-          const amenityData = availableAmenities.find(item => item.name === amenity);
-          return axios.put(`http://localhost:8000/hotel/${id}/add-amenitie/${amenityData.id}`);
-        });
-
-        // Ejecutar todas las peticiones de forma concurrente
-        axios.all([...removePromises, ...addPromises])
-          .then(axios.spread((...responses) => {
-            console.log('Amenities updated:', responses);
-            M.toast({ html: '¡Hotel modificado exitosamente!', classes: 'green' });
-            history.push('/admin/hoteles');
-          }))
-          .catch(error => {
-            console.error('Error updating amenities:', error);
-          });
+        M.toast({ html: '¡Hotel modificado exitosamente!', classes: 'green' });
       })
       .catch(error => {
         console.error('Error updating hotel:', error);
@@ -173,24 +148,6 @@ function AdminHotelModificationForm() {
                   required
                 ></textarea>
                 <label htmlFor="description">Descripción</label>
-              </div>
-              <div className="input-field">
-                <select
-                  multiple
-                  value={selectedAmenities}
-                  onChange={handleAmenitySelect}
-                >
-                  <option value="" disabled>Selecciona los amenities</option>
-                  {availableAmenities.map(amenity => (
-                    <option
-                      key={amenity.id}
-                      value={amenity.name}
-                    >
-                      {amenity.name}
-                    </option>
-                  ))}
-                </select>
-                <label>Amenities</label>
               </div>
               <button
                 className="btn waves-effect waves-light"

@@ -31,6 +31,29 @@ function HotelAmenitiesPage() {
     history.push('/admin/hotel_amenitie/crear');
   };
 
+  const handleDeleteAmenity = (hotelId, amenityId) => {
+    const storedToken = localStorage.getItem('token');
+    if (!storedToken) {
+      history.push('/login');
+      return;
+    }
+    axios.delete(`http://localhost:5000/hotel/${hotelId}/remove-amenitie/${amenityId}`, {
+      headers: {
+        Authorization: `Bearer ${storedToken}`
+      }
+    })
+      .then(response => {
+        console.log('Relacion eliminada:', response.data);
+        // Actualizar la lista de amenities y hoteles después de eliminar
+        const updatedHotelAmenities = hotelAmenities.filter(item => item.hotel_id !== hotelId || item.amenitie_id !== amenityId);
+        setHotelAmenities(updatedHotelAmenities);
+        M.toast({ html: '¡Relacion eliminada exitosamente!', classes: 'green' });
+      })
+      .catch(error => {
+        console.error('Error al eliminar la relacion:', error);
+      });
+  };
+
   return (
     <>
       <Navbar />
@@ -55,6 +78,7 @@ function HotelAmenitiesPage() {
                   <th>Hotel</th>
                   <th>ID Amenitie</th>
                   <th>Amenitie</th>
+                  <th>Eliminar</th>
                 </tr>
               </thead>
               <tbody>
@@ -64,10 +88,19 @@ function HotelAmenitiesPage() {
                     <td>{item.hotel_name}</td>
                     <td>{item.amenitie_id}</td>
                     <td>{item.amenitie}</td>
+                    <td>
+                      <button
+                        className="btn waves-effect waves-light red"
+                        onClick={() => handleDeleteAmenity(item.hotel_id, item.amenitie_id)}
+                      >
+                        Eliminar
+                      </button>
+                    </td>
                   </tr>
                 ))}
               </tbody>
             </table>
+
           </div>
         </div>
       </div>
